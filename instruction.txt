@@ -9,3 +9,24 @@ Where:
 
     the first is a list of directed edges "u v", meaning that there is an arc from node u to node v. This means that wikipedia page with id u has a link to the wikipedia page with link v.
     the second file is a list of names. In particular, at line i, with i in [0,1016866], there is the name of node with id i, which is the name of the corresponding wikipedia page.
+
+
+QUESTION 1: II- Compute the out-degree distribution in G: which are the top-10 pages with largest outdegree?
+QUESTION 2: A- Considering U(G) and restricting to its largest connected component V', compute exactly the diameter of the graph induced by the vertices in V'.
+QUESTION 3: 4- A Minimal Vertex Cover: https://mathworld.wolfram.com/MinimalVertexCover.html 
+QUESTION 4: only for Computer Scientists and Computer Engineers. All the tasks in the following must be done.
+
+    Repeat the chosen questions, using this dataset instead. https://drive.google.com/file/d/1BBnXGzAnloZXX6-0pf-aQqQmb-h-iCU7/view?usp=sharing The graph in this dataset represent a snapshot of the Italian part of Wikipedia as of 2023. You can choose any other tool/language to do it.
+    Modify the algorithm you have chosen in Question 3 to produce all the solutions, for instance all the maximal cliques, printing all the solutions exactly once. This could require a lot of time. You can restrict to a random subgraph of 100 vertices and run your algorithm only on that one. We encourage you to look at the literature on the Internet to find one algorithm that does this job and implement that one. If you are looking for smarter algorithms, this website could be of interest: https://kunihirowasa.github.io/enum/
+    Modify the algorithm to find the minimum (if we are looking for minimal) or the maximum (if we are looking for maximal), resp. the solution with minimum number of elements or with maximum number of elements.
+
+Each student must submit the following files using the "compito" activity in the main page in a single .zip file with name lastname1-lastname2.zip containing:
+
+    lastname1-lastname2.py containing the implementation required in to build the graph and the algorithms. Alternatively, the file can be a notebook file. 
+
+    lastname1-lastname2.pdf (in pdf format) containing the slides to be presented  (they can be in Italian or English, as you prefer)
+
+Lastname1 and lastname2 refers to the two members of the team in lexicographic order. In the case the project is done individually, then use only your lastname.
+
+
+Framework vari per fare grafi grossi, webgraph
