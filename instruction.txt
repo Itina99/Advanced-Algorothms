@@ -1,0 +1,11 @@
+The graph in this dataset represents a snapshot of the Italian part of Wikipedia as of late February 2013. The identifiers are the titles of the pages. Redirects have been carefully taken into account when computing the links, but redirect pages are not part of the final graph. 
+
+In the .zip there are two files.
+
+    itwiki-2013.arcs
+    itwiki-2013.ids
+
+Where:
+
+    the first is a list of directed edges "u v", meaning that there is an arc from node u to node v. This means that wikipedia page with id u has a link to the wikipedia page with link v.
+    the second file is a list of names. In particular, at line i, with i in [0,1016866], there is the name of node with id i, which is the name of the corresponding wikipedia page.
