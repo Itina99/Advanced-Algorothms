@@ -1,6 +1,7 @@
 import networkx as nx
 from tqdm import tqdm
 import random
+import pickle
 
 def read_ids_file(filename):
     id_to_node = {}
@@ -9,7 +10,7 @@ def read_ids_file(filename):
         for i, line in tqdm(enumerate(lines, start=0), desc="Reading IDs"):
             line = line.strip()
             if line:
-                node_id, node_name = (i,line.split(maxsplit=1))
+                node_id, node_name = (i,line)
                 try:
                     node_id = int(node_id)
                     id_to_node[node_id] = node_name
@@ -75,9 +76,12 @@ def print_first_10_lines_ids_file(filename):
                 break
             print(f"ID {i}: {line.strip()}")  # Print line number along with line content
 
-# Usage
-ids_filename = 'itwiki-2013/itwiki-2013.ids'  # Replace with your .ids file path
-arcs_filename = 'itwiki-2013/itwiki-2013.arcs'  # Replace with your .arcs file path
-G = create_graph_from_files(ids_filename, arcs_filename)
-filename = "itwiki-2013/itwiki13.graphml"  # You can change the filename and format as needed
-#nx.write_graphml(G, filename, gzipped=True)
+if __name__ == '__main__':
+    # Usage
+    ids_filename = 'itwiki-2013/itwiki-2013.ids'  # Replace with your .ids file path
+    arcs_filename = 'itwiki-2013/itwiki-2013.arcs'  # Replace with your .arcs file path
+    G = create_graph_from_files(ids_filename, arcs_filename)
+    filename = "itwiki-2013/itwiki13.pickle"  # You can change the filename as needed
+    with open(filename, 'wb') as f:
+        pickle.dump(G, f)
+    #print_random_subset_of_nodes(G)
