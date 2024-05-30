@@ -4,7 +4,7 @@ import random
 import pickle
 
 def read_ids_file(filename):
-    id_to_node = {}
+    dict_node = {}
     with open(filename, 'r') as f:
         lines = f.readlines()
         for i, line in tqdm(enumerate(lines, start=0), desc="Reading IDs"):
@@ -13,10 +13,10 @@ def read_ids_file(filename):
                 node_id, node_name = (i,line)
                 try:
                     node_id = int(node_id)
-                    id_to_node[node_id] = node_name
+                    dict_node[node_id] = node_name
                 except ValueError:
                     print(f"Skipping line with invalid ID: {line}")
-    return id_to_node
+    return dict_node
 
 
 def read_arcs_file(filename):
@@ -36,9 +36,7 @@ def read_arcs_file(filename):
     return edges
 
 
-def create_graph_from_files(ids_filename, arcs_filename):
-    # Step 1: Read nodes
-    id_to_node = read_ids_file(ids_filename)
+def create_graph_from_files(dict, arcs_filename):
     
     # Step 2: Read edges
     edges = read_arcs_file(arcs_filename)
@@ -47,8 +45,8 @@ def create_graph_from_files(ids_filename, arcs_filename):
     G = nx.DiGraph()
     
     # Add nodes with the name from id_to_node
-    for node_id, node_name in tqdm(id_to_node.items(), desc="Adding Nodes"):
-        G.add_node(node_id, name=node_name)
+    for node_id in tqdm(dict.keys(), desc="Adding Nodes"):
+        G.add_node(node_id)
     
     # Add edges
     for edge in tqdm(edges, desc="Adding Edges"):
@@ -56,13 +54,16 @@ def create_graph_from_files(ids_filename, arcs_filename):
     
     return G
 
-def print_random_subset_of_nodes(G, num_samples=5):
-    nodes = list(G.nodes(data=True))
+def print_random_subset_of_nodes(G, node_name_dict, num_samples=5):
+    nodes = list(G.nodes())
     sampled_nodes = random.sample(nodes, min(num_samples, len(nodes)))
-    for node_id, node_data in sampled_nodes:
+    
+    for node_id in sampled_nodes:
         successors = list(G.successors(node_id))
-        successor_names = [(succ, G.nodes[succ].get('name', 'Unknown')) for succ in successors]
-        print(f"Node {node_id} ({node_data.get('name', 'Unknown')}):")
+        successor_names = [(succ, node_name_dict.get(succ, 'Unknown')) for succ in successors]
+        node_name = node_name_dict.get(node_id, 'Unknown')
+        
+        print(f"Node {node_id} ({node_name}):")
         print("  Successors:")
         for succ_id, succ_name in successor_names:
             print(f"    {succ_id} ({succ_name})")
@@ -80,8 +81,9 @@ if __name__ == '__main__':
     # Usage
     ids_filename = 'itwiki-2013/itwiki-2013.ids'  # Replace with your .ids file path
     arcs_filename = 'itwiki-2013/itwiki-2013.arcs'  # Replace with your .arcs file path
-    G = create_graph_from_files(ids_filename, arcs_filename)
+    node_dict = read_ids_file(ids_filename)
+    G = create_graph_from_files(node_dict, arcs_filename)
     filename = "itwiki-2013/itwiki13.pickle"  # You can change the filename as needed
     with open(filename, 'wb') as f:
         pickle.dump(G, f)
-    #print_random_subset_of_nodes(G)
+    print_random_subset_of_nodes(G, node_dict)
