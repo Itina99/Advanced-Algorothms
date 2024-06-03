@@ -1,6 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-import pickle
+import openpickle as op
 import heapq
 from tqdm import tqdm
 
@@ -42,9 +42,6 @@ def out_degree_distribution(G):
     return out_degree_distribution
 
 if __name__ == '__main__': 
-    filename = "itwiki-2013/itwiki13.pickle"
-    with open(filename, 'rb') as f:
-        G = pickle.load(f) # Carica il grafo da un file pickle
-    
+    G=op.open_pickle() # Apre il file pickle
     distribution = out_degree_distribution(G) # Calcola la distribuzione del grado uscente
     print("Distribuzione del grado uscente:", distribution) # Stampa la distribuzione del grado uscente

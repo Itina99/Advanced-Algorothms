@@ -1,4 +1,4 @@
-import pickle
+import openpickle as op
 import networkx as nx
 from tqdm import tqdm
 from collections import deque
@@ -123,7 +123,5 @@ def pipeline(G):
 
 
 if __name__ == "__main__":
-    filename = "itwiki-2013/itwiki13.pickle"
-    with open(filename, 'rb') as f:
-        loaded_graph = pickle.load(f)
+    loaded_graph = op.open_pickle()
     pipeline(loaded_graph)

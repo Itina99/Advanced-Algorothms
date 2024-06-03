@@ -30,3 +30,24 @@ Lastname1 and lastname2 refers to the two members of the team in lexicographic o
 
 
 Framework vari per fare grafi grossi, webgraph
+
+
+
+
+
+
+
+
+
+
+ROBA RELATIVA ALLA MINIMAL COVERAGE :
+1. Approximation Algorithms
+
+- Greedy Algorithm = While a greedy algorithm doesn't guarantee the minimal or minimum vertex cover, it can be a good starting point for large graphs due to its simplicity and speed.
+
+- 2-Approximation Algorithm = For a general graph, a 2-approximation algorithm can be used, which guarantees that the vertex cover found is at most twice the size of the minimum vertex cover.
+
+2. Metaheuristic Algorithms
+- Simulated Annealing is a probabilistic technique for approximating the global optimum of a given function. It can be applied to the vertex cover problem to find a good solution within reasonable time limits.
+
+
