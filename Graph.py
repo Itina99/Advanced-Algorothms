@@ -79,11 +79,11 @@ def print_first_10_lines_ids_file(filename):
 
 if __name__ == '__main__':
     # Usage
-    ids_filename = 'itwiki-2013/itwiki-2013.ids'  # Replace with your .ids file path
-    arcs_filename = 'itwiki-2013/itwiki-2013.arcs'  # Replace with your .arcs file path
+    ids_filename = 'itwiki-2013/itwiki-2013.ids' 
+    arcs_filename = 'itwiki-2013/itwiki-2013.arcs'  
     node_dict = read_ids_file(ids_filename)
     G = create_graph_from_files(node_dict, arcs_filename)
-    filename = "itwiki-2013/itwiki13.pickle"  # You can change the filename as needed
+    filename = "itwiki-2013/itwiki13.pickle"  
     with open(filename, 'wb') as f:
         pickle.dump(G, f)
     print_random_subset_of_nodes(G, node_dict)
