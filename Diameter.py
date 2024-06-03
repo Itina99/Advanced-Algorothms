@@ -47,8 +47,9 @@ def get_fringe(G, start_node, i):
                     queue.append((neighbor, level + 1))
 
     return current_level_nodes
+
 def eccentricity(G, start_node):
-    eccentricity = {}
+    eccentricity = 0
     visited = set()
     queue = deque([(start_node, 0)])
     total_nodes = len(G)  # Total number of nodes in the graph
@@ -58,7 +59,7 @@ def eccentricity(G, start_node):
         node, level = queue.popleft()
         if node not in visited:
             visited.add(node)
-            eccentricity[node] = level
+            eccentricity = max(eccentricity, level)
             progress.update(1)  # Update progress bar
             neighbors = G.neighbors(node)
             for neighbor in neighbors:
