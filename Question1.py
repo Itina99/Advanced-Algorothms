@@ -4,6 +4,7 @@ import openpickle as op
 import heapq
 from tqdm import tqdm
 
+
 def out_degree_distribution(G):
     # Initialize tqdm progress bar
     num_nodes = G.number_of_nodes()
@@ -35,7 +36,10 @@ def out_degree_distribution(G):
     
     # Get the nodes with the highest out-degree from the Min-Heap
     top_out_degree_nodes = sorted(min_heap, reverse=True)
-    print("Top 10 nodes with the highest out-degree:", top_out_degree_nodes)
+    S = op.open_ids()
+    for i in range(10):
+        print("Node ID:", top_out_degree_nodes[i][1], "Out-degree:", top_out_degree_nodes[i][0], "Title:", S[top_out_degree_nodes[i][1]])
+    #print("Top 10 nodes with the highest out-degree:", top_out_degree_nodes)
 
     pbar.close()  # Close the progress bar
 
