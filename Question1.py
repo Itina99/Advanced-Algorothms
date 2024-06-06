@@ -3,9 +3,10 @@ import matplotlib.pyplot as plt
 import openpickle as op
 import heapq
 from tqdm import tqdm
+import Graph
 
 
-def out_degree_distribution(G):
+def out_degree_distribution(G, node_dict):
     # Initialize tqdm progress bar
     num_nodes = G.number_of_nodes()
     pbar = tqdm(total=num_nodes, desc="Calculating out-degree distribution")
@@ -36,16 +37,20 @@ def out_degree_distribution(G):
     
     # Get the nodes with the highest out-degree from the Min-Heap
     top_out_degree_nodes = sorted(min_heap, reverse=True)
-    S = op.open_ids()
-    for i in range(10):
-        print("Node ID:", top_out_degree_nodes[i][1], "Out-degree:", top_out_degree_nodes[i][0], "Title:", S[top_out_degree_nodes[i][1]])
-    #print("Top 10 nodes with the highest out-degree:", top_out_degree_nodes)
 
     pbar.close()  # Close the progress bar
+
+    # Print the top 10 nodes with the highest out-degree
+    print("Top 10 nodes with the highest out-degree:")
+    for out_degree, node in top_out_degree_nodes:
+        print(f"Node: {node_dict[node]}, Out-Degree: {out_degree}")
 
     return out_degree_distribution
 
 if __name__ == '__main__': 
     G=op.open_pickle() # Apre il file pickle
-    distribution = out_degree_distribution(G) # Calcola la distribuzione del grado uscente
+    ids_filename = 'itwiki-2013/itwiki-2013.ids' 
+    node_dict = Graph.read_ids_file(ids_filename)
+    distribution = out_degree_distribution(G, node_dict) # Calcola la distribuzione del grado uscente
     print("Distribuzione del grado uscente:", distribution) # Stampa la distribuzione del grado uscente
+    

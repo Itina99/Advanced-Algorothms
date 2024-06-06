@@ -27,6 +27,6 @@ def repeat_pipeline(G):
 if __name__ == '__main__': 
     ids_filename = 'enwiki-2023/enwiki-2023.ids'
     arcs_filename = 'enwiki-2023/enwiki-2023.arcs'  
-    node_dict = Graph.read_ids_file(ids_filename)
-    G = Graph.create_graph_from_files(node_dict, arcs_filename)
-    repeat_pipeline(G)
+    #node_dict = Graph.read_ids_file(ids_filename)
+    G = Graph.create_graph_from_files(ids_filename, arcs_filename)
+    #repeat_pipeline(G)

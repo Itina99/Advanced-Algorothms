@@ -3,14 +3,14 @@ from tqdm import tqdm
 import random
 import pickle
 
+
 def read_ids_file(filename):
     dict_node = {}
     with open(filename, 'r') as f:
-        lines = f.readlines()
-        for i, line in tqdm(enumerate(lines, start=0), desc="Reading IDs"):
+        for i, line in tqdm(enumerate(f), desc="Reading IDs"):
             line = line.strip()
             if line:
-                node_id, node_name = (i,line)
+                node_id, node_name = (i, line)
                 try:
                     node_id = int(node_id)
                     dict_node[node_id] = node_name
@@ -18,40 +18,44 @@ def read_ids_file(filename):
                     print(f"Skipping line with invalid ID: {line}")
     return dict_node
 
+def read_nodes_file(filename):
+    with open(filename, 'r') as f:
+        for node_id, line in enumerate(tqdm(f, desc="Reading Nodes"), start=1):
+            if line.strip():  # if line is not empty
+                yield node_id
+
 
 def read_arcs_file(filename):
-    edges = []
+    # First pass to count the lines
     with open(filename, 'r') as f:
-        lines = f.readlines()
-        for line in tqdm(lines, desc="Reading Edges"):
+        total_lines = sum(1 for _ in f)
+
+    # Second pass to read the lines with a progress bar
+    with open(filename, 'r') as f:
+        for line in tqdm(f, desc="Reading Edges", total=total_lines, unit=" lines"):
             parts = line.strip().split()
             if len(parts) != 2:
                 print(f"Warning: Malformed line: {line.strip()}")
-            else:
-                try:
-                    u, v = map(int, parts)
-                    edges.append((u, v))
-                except ValueError:
-                    print(f"Warning: Invalid edge in line: {line.strip()}")
-    return edges
+                continue
+            try:
+                u, v = map(int, parts)
+                yield u, v
+            except ValueError:
+                print(f"Warning: Invalid edge in line: {line.strip()}")
 
 
-def create_graph_from_files(dict, arcs_filename):
-    
-    # Step 2: Read edges
-    edges = read_arcs_file(arcs_filename)
-    
-    # Step 3: Create a directed graph
+def create_graph_from_files(nodes_filename, arcs_filename):
+    # Create a directed graph
     G = nx.DiGraph()
-    
-    # Add nodes with the name from id_to_node
-    for node_id in tqdm(dict.keys(), desc="Adding Nodes"):
+
+    # Add nodes from the nodes file
+    for node_id in read_nodes_file(nodes_filename):
         G.add_node(node_id)
-    
+
     # Add edges
-    for edge in tqdm(edges, desc="Adding Edges"):
-        G.add_edge(*edge)
-    
+    for u, v in read_arcs_file(arcs_filename):
+        G.add_edge(u, v)
+
     return G
 
 def print_random_subset_of_nodes(G, node_name_dict, num_samples=5):
