@@ -7,6 +7,8 @@ import numpy as np
 import Diameter as dm
 import minimal_vertex_coverage as mvc
 import Question1 as q1
+import openpickle
+import Graph4
 
 
 def repeat_pipeline(G):
@@ -28,5 +30,9 @@ if __name__ == '__main__':
     ids_filename = 'enwiki-2023/enwiki-2023.ids'
     arcs_filename = 'enwiki-2023/enwiki-2023.arcs'  
     #node_dict = Graph.read_ids_file(ids_filename)
-    G = Graph.create_graph_from_files(ids_filename, arcs_filename)
+    #G = Graph.create_graph_from_files(ids_filename, arcs_filename)
     #repeat_pipeline(G)
+    save_filename = 'enwiki-2023/enwiki-2023.graph.pkl.gz'
+    loaded_g, loaded_node_id, loaded_node_name = openpickle.load_graph_with_compression(save_filename)
+    Graph4.print_first_5_nodes_with_successors(loaded_g, loaded_node_id, loaded_node_name)
+    
