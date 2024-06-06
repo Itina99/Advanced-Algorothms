@@ -73,7 +73,7 @@ def Bi(G, start_node, i):# da sistemare con la roba della fringe
     max_ecc = -1
     fringe = get_fringe(G, start_node, i)
 
-    progress_bar = tqdm.tqdm(total=len(fringe), desc="Processing nodes")
+    progress_bar = tqdm(total=len(fringe), desc="Processing nodes")
 
     for node in fringe:
         e = eccentricity(G, node)  # eccentricity viene calcolata facendo una bfs

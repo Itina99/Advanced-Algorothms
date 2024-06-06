@@ -86,7 +86,7 @@ if __name__ == '__main__':
     ids_filename = 'itwiki-2013/itwiki-2013.ids' 
     arcs_filename = 'itwiki-2013/itwiki-2013.arcs'  
     node_dict = read_ids_file(ids_filename)
-    G = create_graph_from_files(node_dict, arcs_filename)
+    G = create_graph_from_files(ids_filename, arcs_filename)
     filename = "itwiki-2013/itwiki13.pickle"  
     with open(filename, 'wb') as f:
         pickle.dump(G, f)
