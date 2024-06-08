@@ -30,8 +30,52 @@ def greedy_vertex_cover(graph):
     
     return cover
 
+def enumerate_minimal_vertex_covers(graph):
+    def is_vertex_cover(cover, graph):
+        for e in graph.edges():
+            if e.source() not in cover and e.target() not in cover:
+                return False
+        return True
+
+    def is_minimal(cover, graph):
+        for v in list(cover):
+            new_cover = set(cover)
+            new_cover.remove(v)
+            if is_vertex_cover(new_cover, graph):
+                return False
+        return True
+
+    def search(current_cover, remaining_vertices):
+        if is_vertex_cover(current_cover, graph):
+            if is_minimal(current_cover, graph):
+                result.append(current_cover)
+            return
+
+        for vertex in list(remaining_vertices):
+            new_cover = set(current_cover)
+            new_cover.add(vertex)
+            new_remaining = set(remaining_vertices)
+            new_remaining.remove(vertex)
+            search(new_cover, new_remaining)
+
+    result = []
+    search(set(), set(graph.vertices()))
+    return result
+
+def find_minimal_vertex_cover(graph):
+    covers = enumerate_minimal_vertex_covers(graph)
+    min_cover = min(covers, key=len)
+    return min_cover
+
+
 if __name__ == "__main__":
     G,node_id, node_name = op.load_graph_with_compression()
     print("Graph Loaded")
-    greedy_cover = greedy_vertex_cover(G)
-    print("Greedy Vertex Cover:", len(greedy_cover))
+    #greedy_cover = greedy_vertex_cover(G)
+    #print("Greedy Vertex Cover:", len(greedy_cover))
+    covers = enumerate_minimal_vertex_covers(G)
+    for cover in covers:
+        print([G.vertex_index[v] for v in cover])
+    min_cover = find_minimal_vertex_cover(G)
+    print("Minimum Vertex Cover:", [G.vertex_index[v] for v in min_cover])
+
