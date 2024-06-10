@@ -71,11 +71,11 @@ def find_minimal_vertex_cover(graph):
 if __name__ == "__main__":
     G,node_id, node_name = op.load_graph_with_compression()
     print("Graph Loaded")
-    #greedy_cover = greedy_vertex_cover(G)
-    #print("Greedy Vertex Cover:", len(greedy_cover))
-    covers = enumerate_minimal_vertex_covers(G)
-    for cover in covers:
-        print([G.vertex_index[v] for v in cover])
-    min_cover = find_minimal_vertex_cover(G)
-    print("Minimum Vertex Cover:", [G.vertex_index[v] for v in min_cover])
+    greedy_cover = greedy_vertex_cover(G)
+    print("Greedy Vertex Cover:", len(greedy_cover))
+    #covers = enumerate_minimal_vertex_covers(G)
+    #for cover in covers:
+        #print([G.vertex_index[v] for v in cover])
+    #min_cover = find_minimal_vertex_cover(G)
+    #print("Minimum Vertex Cover:", [G.vertex_index[v] for v in min_cover])
 
