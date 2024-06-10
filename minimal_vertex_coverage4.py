@@ -62,8 +62,10 @@ def enumerate_minimal_vertex_covers(graph):
     search(set(), set(graph.vertices()))
     return result
 
-def find_minimal_vertex_cover(graph):
-    covers = enumerate_minimal_vertex_covers(graph)
+
+def find_minimal_vertex_cover(graph, num_nodes=100):
+    nodes_to_consider = set(graph.get_vertices()[:num_nodes])
+    covers = enumerate_minimal_vertex_covers(graph, nodes_to_consider)
     min_cover = min(covers, key=len)
     return min_cover
 
