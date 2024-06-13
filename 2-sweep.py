@@ -1,3 +1,4 @@
+import random
 import networkx as nx
 from tqdm import tqdm
 from collections import deque
@@ -6,7 +7,7 @@ import openpickle as op
 
 def bfs_farthest_node(graph, start):
     """ Perform BFS and return the farthest node and its distance from the start node. """
-    visited = set()
+    visited = set([start])
     queue = deque([(start, 0)])  # (node, distance)
     farthest_node = start
     max_distance = 0
@@ -18,22 +19,24 @@ def bfs_farthest_node(graph, start):
             max_distance = distance
             farthest_node = node
         
-        visited.add(node)
-        
         for neighbor in graph.neighbors(node):
             if neighbor not in visited:
+                visited.add(neighbor)
                 queue.append((neighbor, distance + 1))
     
     return farthest_node, max_distance
+
 
 def two_sweep_approximation(graph):
     # Step 1: Convert the graph to an undirected graph if it is directed
     if graph.is_directed():
         graph = graph.to_undirected()
     
-    # Step 2: Choose an arbitrary starting vertex v1 (here, the first node in the graph)
-    v1 = list(graph.nodes())[0]
-    
+    # Step 2: Choose an arbitrary starting vertex v1 in the graph
+
+    # Randomly choose a vertex as v1
+    v1 = random.choice(list(graph.nodes()))
+
     # Step 3: Perform BFS from v1 to find v2
     v2, _ = bfs_farthest_node(graph, v1)
     
