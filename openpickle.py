@@ -1,4 +1,3 @@
-import Graph
 import pickle
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -8,7 +7,7 @@ import gzip
 
 
 def open_pickle(filename = "itwiki-2013/itwiki13.pickle"):
-    
+    print("Opening graph...")
     with open(filename, 'rb') as f:
         loaded_graph = pickle.load(f)
     return loaded_graph
