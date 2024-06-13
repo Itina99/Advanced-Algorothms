@@ -19,4 +19,9 @@ def load_graph_with_compression(filename = 'enwiki-2023/enwiki-2023.graph.pkl.gz
         graph, node_id, node_name = pickle.load(f)
     return graph, node_id, node_name
 
+def open_undirected(filename = "itwiki-2013/itwiki13_undirected.pickle"):
+    print("Opening undirected graph...")
+    with open(filename, 'rb') as f:
+        loaded_graph = pickle.load(f)   
+    return loaded_graph
 

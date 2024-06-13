@@ -3,9 +3,9 @@ from tqdm import tqdm
 import gzip
 import pickle
 
-def build_graph_from_files(ids_file, arc_file):
+def build_graph_from_files(ids_file, arc_file, directed=True):
     # Create an empty Graph object
-    g = Graph(directed=False)
+    g = Graph(directed=directed)
 
     # Create property maps to store node IDs and node names
     node_id = g.new_vertex_property("int")
@@ -48,6 +48,8 @@ def build_graph_from_files(ids_file, arc_file):
     progress_bar_arc.close()  # Close progress bar for .arc file
 
     return g, node_id, node_name
+
+
 def print_first_5_nodes_with_successors(graph, node_id_prop, node_name_prop):
     for v in graph.vertices():
         if node_id_prop[v] < 5:  # Print only the first 5 nodes
@@ -63,11 +65,14 @@ def save_graph_with_compression(graph, node_id, node_name, filename):
 if __name__ == '__main__':
     ids_filename = 'enwiki-2023/enwiki-2023.ids'
     arcs_filename = 'enwiki-2023/enwiki-2023.arcs'
-    g, node_id, node_name = build_graph_from_files(ids_filename, arcs_filename)
+    g, node_id, node_name = build_graph_from_files(ids_filename, arcs_filename, directed=False)
     print_first_5_nodes_with_successors(g, node_id, node_name)
 
     # Save the graph with compression
-    save_filename = 'enwiki-2023/enwiki-2023.graph.pkl.gz'
+    #save_filename = 'enwiki-2023/enwiki-2023.graph.pkl.gz'
+    #save_graph_with_compression(g, node_id, node_name, save_filename)
+
+    save_filename = 'enwiki-2023/enwiki-2023_undirected.graph.pkl.gz'
     save_graph_with_compression(g, node_id, node_name, save_filename)
 
 # Now you can use the created graph 'g' along with node_id and node_name property maps.

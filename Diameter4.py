@@ -98,13 +98,13 @@ def diameter(G, start_node):
 
 def pipeline(G):
     print("Making graph undirected")
-    U = undirected(G)
+    G = undirected(G)
     print("Finding largest connected component")
-    LCC = largest_connected_component(U)
+    G = largest_connected_component(G)
     print("Finding starting node")
-    start_node = starting_node(LCC)
+    start_node = starting_node(G)
     print("Calculating diameter")
-    diam = diameter(LCC, start_node)
+    diam = diameter(G, start_node)
     print(f"Diameter: {diam}")
 
 if __name__ == "__main__":

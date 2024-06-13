@@ -58,6 +58,20 @@ def create_graph_from_files(nodes_filename, arcs_filename):
 
     return G
 
+def create_undirected_graph_from_files(nodes_filename, arcs_filename):
+    # Create an undirected graph
+    G = nx.Graph()
+
+    # Add nodes from the nodes file
+    for node_id in read_nodes_file(nodes_filename):
+        G.add_node(node_id)
+
+    # Add edges
+    for u, v in read_arcs_file(arcs_filename):
+        G.add_edge(u, v)
+
+    return G
+
 def print_random_subset_of_nodes(G, node_name_dict, num_samples=5):
     nodes = list(G.nodes())
     sampled_nodes = random.sample(nodes, min(num_samples, len(nodes)))
@@ -86,8 +100,10 @@ if __name__ == '__main__':
     ids_filename = 'itwiki-2013/itwiki-2013.ids' 
     arcs_filename = 'itwiki-2013/itwiki-2013.arcs'  
     node_dict = read_ids_file(ids_filename)
-    G = create_graph_from_files(ids_filename, arcs_filename)
-    filename = "itwiki-2013/itwiki13.pickle"  
+    #G = create_graph_from_files(ids_filename, arcs_filename)
+    #filename = "itwiki-2013/itwiki13.pickle"  
+    G = create_undirected_graph_from_files(ids_filename, arcs_filename)
+    filename = "itwiki-2013/itwiki13_undirected.pickle"
     with open(filename, 'wb') as f:
         pickle.dump(G, f)
     print_random_subset_of_nodes(G, node_dict)

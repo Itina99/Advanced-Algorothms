@@ -3,13 +3,6 @@ import networkx as nx
 from tqdm import tqdm
 from collections import deque
 
-# transform a directed graph into an undirected graph
-def undirected(G): 
-    U = nx.Graph()
-    for u, v in tqdm(G.edges(), desc="Making Graph Undirected"):
-        U.add_edge(u, v)
-    return U
-
 # find the largest connected component in a graph
 def largest_connected_component(G):
     largest_cc = max(nx.connected_components(G), key=len)
@@ -109,19 +102,16 @@ def diameter(G, start_node):
     return lb
 
 
-def pipeline(G):
-    print("Making graph undirected")
-    U = undirected(G)
+def pipeline_undirected(G):
     print("Finding largest connected component")
-    LCC = largest_connected_component(U)
+    G = largest_connected_component(G)
     print("Finding starting node")
-    start_node = starting_node(LCC)
+    start_node = starting_node(G)
     print("Calculating diameter")
-    diam = diameter(LCC, start_node)
+    diam = diameter(G, start_node)
     print(f"Diameter: {diam}")
 
 
-
 if __name__ == "__main__":
-    loaded_graph = op.open_pickle()
-    pipeline(loaded_graph)
+    loaded_graph = op.open_undirected()
+    pipeline_undirected(loaded_graph)
