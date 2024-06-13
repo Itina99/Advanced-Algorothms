@@ -57,15 +57,10 @@ def largest_connected_component(G):
 
 if __name__ == '__main__':
     # open graph from pickle file
-    filename = 'itwiki-2013/itwiki13.pickle'
-    print("Loading graph from pickle file...")
-    G = op.open_pickle(filename)
+    G = op.open_undirected()
     print("Graph loaded from pickle file.")
-    print("making graph undirected...")
-    U = undirected(G)
-    print("Finding the largest connected component...")
-    largest_cc = largest_connected_component(U)
+    G = largest_connected_component(G)
     print("Largest connected component found.")
     print("Calculating the approximated diameter of the largest connected component...")
-    diameter_approx_cc = two_sweep_approximation(largest_cc)
+    diameter_approx_cc = two_sweep_approximation(G)
     print("Approximated Diameter of Largest Connected Component:", diameter_approx_cc)

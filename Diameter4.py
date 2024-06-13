@@ -1,19 +1,12 @@
 import graph_tool.all as gt
-from tqdm import tqdm
 from collections import deque
-import gzip
-import pickle
-
-# Transform a directed graph into an undirected graph
-def undirected(G):
-    U = gt.Graph(directed=False)
-    U.add_edge_list(G.edges())
-    return U
+from tqdm import tqdm
+import openpickle as op
 
 # Find the largest connected component in a graph
 def largest_connected_component(G):
     comp, hist = gt.label_components(G)
-    largest_comp = comp.a.argmax()
+    largest_comp = hist.argmax()
     return gt.GraphView(G, vfilt=comp.a == largest_comp).copy()
 
 # Find the starting node for the diameter calculation
@@ -97,8 +90,6 @@ def diameter(G, start_node):
     return lb
 
 def pipeline(G):
-    print("Making graph undirected")
-    G = undirected(G)
     print("Finding largest connected component")
     G = largest_connected_component(G)
     print("Finding starting node")
@@ -108,7 +99,7 @@ def pipeline(G):
     print(f"Diameter: {diam}")
 
 if __name__ == "__main__":
-    filename = 'enwiki-2023/enwiki-2023.graph.pkl.gz'
-    with gzip.open(filename, 'rb') as f:
-        loaded_graph, node_id, node_name = pickle.load(f)
-    pipeline(loaded_graph)
+    graph, node_id, node_name = op.load_undirected_graph_with_compression()
+    pipeline(graph)
+
+
