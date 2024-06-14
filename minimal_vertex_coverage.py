@@ -61,11 +61,11 @@ def minimal_vertex_cover_ilp(graph):
 
 if __name__ == "__main__":
     G = op.open_pickle()
-    vertex_cover = minimal_vertex_cover_ilp(G)
-    print(f"Vertex Cover Size: {len(vertex_cover)}")
+    #vertex_cover = minimal_vertex_cover_ilp(G)
+    #print(f"Vertex Cover Size: {len(vertex_cover)}")
     ##############################################################
     #TODO: Per lollo, esegui entrambi gli algoritmi separatamente e confronta i risultati
     ##############################################################
     
-    #greedy_cover = greedy_vertex_cover(G)
-    #print("Greedy Vertex Cover:", len(greedy_cover))
+    greedy_cover = greedy_vertex_cover(G)
+    print("Greedy Vertex Cover:", len(greedy_cover))
