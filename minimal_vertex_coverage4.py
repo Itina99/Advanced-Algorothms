@@ -1,6 +1,7 @@
 import graph_tool.all as gt
 from tqdm import tqdm
 import openpickle as op
+import pulp
 
 
 def is_vertex_cover(graph, cover):
@@ -30,90 +31,34 @@ def greedy_vertex_cover(graph):
 ################################################# TEST SECONDO ALGORITMO #################################################
 
 
-def preprocess_graph(graph):
-    """Preprocess the graph by removing isolated vertices."""
-    # Convert to graph-tool graph
-    g = gt.Graph(directed=False)
-    vprop_id = g.new_vertex_property("int")
-    vertex_map = {}  # Map node_id to graph-tool vertex descriptor
-    for node, idx in graph.items():
-        v = g.add_vertex()
-        vertex_map[node] = v
-        vprop_id[v] = idx
-    
-    # Add edges
-    for node, neighbors in tqdm(graph.items(), desc="Adding edges"):
-        for neighbor in neighbors:
-            g.add_edge(vertex_map[node], vertex_map[neighbor])
-    
-    # Remove isolated vertices
-    gt.remove_isolated_vertices(g)
-    
-    return g
+def minimal_vertex_cover_ilp(graph):
+    print("Formulating ILP...")
+    # Initialize ILP problem
+    prob = pulp.LpProblem("MinimalVertexCover", pulp.LpMinimize)
 
-def minimal_vertex_cover(graph):
-    # Preprocess the graph to reduce its size
-    graph = preprocess_graph(graph)
-    
-    # Create a property map for vertex cover
-    vc = graph.new_vertex_property("bool")
-    vc.a = False  # Initialize all vertices as not in the cover
-    
-    # Get the number of edges for tqdm progress bar
-    total_edges = graph.num_edges()
-    
-    # Adding constraints to the vertex cover problem
-    for edge in tqdm(graph.edges(), desc="Adding constraints", total=total_edges):
-        u, v = edge.source(), edge.target()
-        vc[u] = True
-        vc[v] = True
-    
-    # Solve the problem (in this case, just use the constructed vertex cover)
-    vertex_cover = [v for v in graph.vertices() if vc[v]]
+    # Create a binary variable for each vertex
+    vertex_vars = {v: pulp.LpVariable(f"v_{v}", cat='Binary') for v in graph.vertices()}
+
+    # Objective: Minimize the sum of the vertex variables
+    prob += pulp.lpSum(vertex_vars[v] for v in graph.vertices()), "TotalVertices"
+
+    # Constraint: For each edge, at least one of its endpoints must be in the vertex cover
+    for e in graph.edges():
+        v1, v2 = int(e.source()), int(e.target())
+        prob += vertex_vars[graph.vertex(v1)] + vertex_vars[graph.vertex(v2)] >= 1, f"Edge_{v1}_{v2}"
+
+    print("Solving ILP...")
+    # Solve the ILP problem
+    prob.solve()
+
+    # Extract the solution
+    vertex_cover = [v for v in graph.vertices() if pulp.value(vertex_vars[v]) == 1]
+
     return vertex_cover
 
 ################################################################################################
 
 
-""" def enumerate_minimal_vertex_covers(graph):
-    def is_vertex_cover(cover, graph):
-        for e in graph.edges():
-            if e.source() not in cover and e.target() not in cover:
-                return False
-        return True
-
-    def is_minimal(cover, graph):
-        for v in list(cover):
-            new_cover = set(cover)
-            new_cover.remove(v)
-            if is_vertex_cover(new_cover, graph):
-                return False
-        return True
-
-    def search(current_cover, remaining_vertices):
-        if is_vertex_cover(current_cover, graph):
-            if is_minimal(current_cover, graph):
-                result.append(current_cover)
-            return
-
-        for vertex in list(remaining_vertices):
-            new_cover = set(current_cover)
-            new_cover.add(vertex)
-            new_remaining = set(remaining_vertices)
-            new_remaining.remove(vertex)
-            search(new_cover, new_remaining)
-
-    result = []
-    search(set(), set(graph.vertices()))
-    return result """
-
-
-""" def find_minimal_vertex_cover(graph, num_nodes=100):
-    nodes_to_consider = set(graph.get_vertices()[:num_nodes])
-    covers = enumerate_minimal_vertex_covers(graph, nodes_to_consider)
-    min_cover = min(covers, key=len)
-    return min_cover
- """
 
 if __name__ == "__main__":
     G,node_id, node_name = op.load_graph_with_compression()
@@ -127,7 +72,7 @@ if __name__ == "__main__":
     #ma potrebbe riempire la memoria. 
     ####################################################
 
-    vertex_cover = minimal_vertex_cover(G)
+    vertex_cover = minimal_vertex_cover_ilp(G)
     print(f"Vertex Cover Size: {len(vertex_cover)}")
 
     #covers = enumerate_minimal_vertex_covers(G)

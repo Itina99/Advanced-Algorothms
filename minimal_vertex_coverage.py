@@ -4,7 +4,7 @@ import openpickle as op
 import random
 import numpy as np
 from tqdm import tqdm
-from pulp import LpProblem, LpMinimize, LpVariable, lpSum, LpBinary, PULP_CBC_CMD
+import pulp
 
 def is_vertex_cover(graph, cover):
     for u, v in graph.edges():
@@ -32,39 +32,31 @@ def greedy_vertex_cover(graph):
 
 
 #################################### SECONDO TEST ####################################
-def preprocess_graph(graph):
-    """Preprocess the graph by removing isolated vertices and applying reduction rules."""
-    # Remove isolated vertices
-    graph.remove_nodes_from(list(nx.isolates(graph)))
-    # Additional reduction rules can be added here
-    return graph
-
 def minimal_vertex_cover_ilp(graph):
-    # Preprocess the graph to reduce its size
-    print("Preprocessing the graph...")
-    graph = preprocess_graph(graph)
-    
-    # Create an ILP problem
-    prob = LpProblem("Minimal_Vertex_Cover", LpMinimize)
-    
-    # Create a binary variable for each vertex in the graph
-    x = LpVariable.dicts("x", graph.nodes(), 0, 1, LpBinary)
-    
-    # Objective function: Minimize the sum of all vertex variables
-    prob += lpSum(x[v] for v in graph.nodes())
-    
-    # Constraints: For each edge, at least one of its vertices must be in the cover
-    edges = list(graph.edges())
-    for u, v in tqdm(edges, desc="Adding constraints"):
-        prob += x[u] + x[v] >= 1
-    
-    # Solve the problem with a progress bar
-    print("Solving the ILP problem...")
-    prob.solve(PULP_CBC_CMD(msg=1))  # msg=1 enables verbose solver output
-    
-    # Extract the vertex cover
-    vertex_cover = [v for v in graph.nodes() if x[v].varValue == 1]
+    print("Formulating ILP...")
+    # Initialize ILP problem
+    prob = pulp.LpProblem("MinimalVertexCover", pulp.LpMinimize)
+
+    # Create a binary variable for each vertex
+    vertex_vars = {v: pulp.LpVariable(f"v_{v}", cat='Binary') for v in graph.nodes()}
+
+    # Objective: Minimize the sum of the vertex variables
+    prob += pulp.lpSum(vertex_vars[v] for v in graph.nodes()), "TotalVertices"
+
+    # Constraint: For each edge, at least one of its endpoints must be in the vertex cover
+    for u, v in graph.edges():
+        prob += vertex_vars[u] + vertex_vars[v] >= 1, f"Edge_{u}_{v}"
+
+    print("Solving ILP...")
+    # Solve the ILP problem
+    prob.solve()
+
+    # Extract the solution
+    vertex_cover = [v for v in graph.nodes() if pulp.value(vertex_vars[v]) == 1]
+
     return vertex_cover
+
+
 
 
 if __name__ == "__main__":
