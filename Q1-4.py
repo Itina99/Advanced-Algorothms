@@ -1,8 +1,10 @@
 from graph_tool.all import *
 import heapq
 from tqdm import tqdm
-import gzip
-import pickle
+import openpickle as op
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
 
 def out_degree_distribution(graph, node_name_prop):
     # Initialize tqdm progress bar
@@ -46,11 +48,32 @@ def out_degree_distribution(graph, node_name_prop):
 
     return out_degree_distribution
 
+
+def plot_out_degree_distribution(out_degree_distribution):
+    # Extracting degrees and their frequencies
+    degrees = list(out_degree_distribution.keys())
+    frequencies = list(out_degree_distribution.values())
+    
+    # Convert to numpy arrays for easier manipulation
+    degrees = np.array(degrees)
+    frequencies = np.array(frequencies)
+    
+    # Plotting the log-log plot of out-degree distribution
+    plt.figure(figsize=(12, 6))
+    plt.scatter(degrees, frequencies, color='blue', edgecolor='black')
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.xlabel('Out-Degree (log scale)')
+    plt.ylabel('Frequency (log scale)')
+    plt.title('Out-Degree Distribution (Log-Log Plot)')
+    plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+    
+    plt.show()
+
 if __name__ == '__main__':
     # Load the graph and node properties from a file (assuming you've saved it in a similar way)
-    with gzip.open('enwiki-2023/enwiki-2023.graph.pkl.gz', 'rb') as f:
-        g, node_id, node_name = pickle.load(f)
+    g, node_id, node_name = op.load_graph_with_compression()
     
     # Calculate the out-degree distribution
     distribution = out_degree_distribution(g, node_name)
-    print("Out-Degree Distribution:", distribution)
+    plot_out_degree_distribution(distribution)

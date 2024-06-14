@@ -4,6 +4,7 @@ import openpickle as op
 import heapq
 from tqdm import tqdm
 import Graph
+import numpy as np
 
 
 def out_degree_distribution(G, node_dict):
@@ -47,10 +48,31 @@ def out_degree_distribution(G, node_dict):
 
     return out_degree_distribution
 
+def plot_out_degree_distribution(out_degree_distribution):
+    # Extracting degrees and their frequencies
+    degrees = list(out_degree_distribution.keys())
+    frequencies = list(out_degree_distribution.values())
+    
+    # Convert to numpy arrays for easier manipulation
+    degrees = np.array(degrees)
+    frequencies = np.array(frequencies)
+    
+    # Plotting the log-log plot of out-degree distribution
+    plt.figure(figsize=(12, 6))
+    plt.scatter(degrees, frequencies, color='blue', edgecolor='black')
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.xlabel('Out-Degree (log scale)')
+    plt.ylabel('Frequency (log scale)')
+    plt.title('Out-Degree Distribution (Log-Log Plot)')
+    plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+    
+    plt.show()
+
 if __name__ == '__main__': 
     G=op.open_pickle() # Apre il file pickle
     ids_filename = 'itwiki-2013/itwiki-2013.ids' 
     node_dict = Graph.read_ids_file(ids_filename)
     distribution = out_degree_distribution(G, node_dict) # Calcola la distribuzione del grado uscente
-    print("Distribuzione del grado uscente:", distribution) # Stampa la distribuzione del grado uscente
+    plot_out_degree_distribution(distribution) # Plotta la distribuzione del grado uscente
     
