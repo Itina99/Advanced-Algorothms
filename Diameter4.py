@@ -5,7 +5,7 @@ import openpickle as op
 
 # Find the largest connected component in a graph
 def largest_connected_component(G):
-    def bfs_component_size(start_vertex):
+    def bfs_component_size(start_vertex, progress):
         visited = set()
         queue = deque([start_vertex])
         size = 0
@@ -15,6 +15,7 @@ def largest_connected_component(G):
             if vertex not in visited:
                 visited.add(vertex)
                 size += 1
+                progress.update(1)
                 for neighbor in vertex.out_neighbours():
                     if neighbor not in visited:
                         queue.append(neighbor)
@@ -27,11 +28,10 @@ def largest_connected_component(G):
     
     for vertex in G.vertices():
         if vertex not in visited_overall:
-            component, size = bfs_component_size(vertex)
+            component, size = bfs_component_size(vertex, progress)
             visited_overall.update(component)
             if size > len(largest_component):
                 largest_component = component
-            progress.update(len(component))
     
     progress.close()
 
