@@ -5,9 +5,41 @@ import openpickle as op
 
 # Find the largest connected component in a graph
 def largest_connected_component(G):
-    comp, hist = gt.label_components(G)
-    largest_comp = hist.argmax()
-    return gt.GraphView(G, vfilt=comp.a == largest_comp).copy()
+    def bfs_component_size(start_vertex):
+        visited = set()
+        queue = deque([start_vertex])
+        size = 0
+        
+        while queue:
+            vertex = queue.popleft()
+            if vertex not in visited:
+                visited.add(vertex)
+                size += 1
+                for neighbor in vertex.out_neighbours():
+                    if neighbor not in visited:
+                        queue.append(neighbor)
+        return visited, size
+    
+    visited_overall = set()
+    largest_component = set()
+    
+    progress = tqdm(total=G.num_vertices(), desc="Finding Largest Connected Component", unit="vertex")
+    
+    for vertex in G.vertices():
+        if vertex not in visited_overall:
+            component, size = bfs_component_size(vertex)
+            visited_overall.update(component)
+            if size > len(largest_component):
+                largest_component = component
+            progress.update(len(component))
+    
+    progress.close()
+
+    vfilt = G.new_vertex_property("bool")
+    for v in largest_component:
+        vfilt[v] = True
+    
+    return gt.GraphView(G, vfilt=vfilt)
 
 # Find the starting node for the diameter calculation
 def starting_node(G):
