@@ -4,49 +4,37 @@ import gzip
 import pickle
 
 def build_graph_from_files(ids_file, arc_file, directed=True):
-    # Create an empty Graph object
     g = Graph(directed=directed)
 
-    # Create property maps to store node IDs and node names
     node_id = g.new_vertex_property("int")
     node_name = g.new_vertex_property("string")
 
-    # Count the total number of lines in the .ids file
     with open(ids_file, 'r') as f:
         num_lines = sum(1 for line in f)
 
-    # Initialize tqdm progress bar
     progress_bar = tqdm(total=num_lines, desc="Building graph")
 
-    # Read node IDs from .ids file
     with open(ids_file, 'r') as f:
         for line_num, line in enumerate(f):
             line = line.strip()
-            v = g.add_vertex()  # Add a vertex for each line in the .ids file
-            node_id[v] = line_num  # Assign the line number as the ID
-            node_name[v] = line  # Assign the node name
+            v = g.add_vertex()  
+            node_id[v] = line_num  
+            node_name[v] = line  
+            progress_bar.update(1)  
+    progress_bar.close()  
 
-            progress_bar.update(1)  # Update progress bar
-
-    progress_bar.close()  # Close progress bar
-
-    # Read edges from .arc file and add them to the graph
     with open(arc_file, 'r') as f:
         num_lines_arc = sum(1 for line in f)
 
-    # Initialize tqdm progress bar for adding edges from .arc file
     progress_bar_arc = tqdm(total=num_lines_arc, desc="Adding edges from .arc file")
 
-    # Read edges from .arc file and add them to the graph
     with open(arc_file, 'r') as f:
         for line in f:
-            u, v = map(int, line.strip().split())  # Assuming edges are space-separated
+            u, v = map(int, line.strip().split()) 
             g.add_edge(g.vertex(u), g.vertex(v))
 
-            progress_bar_arc.update(1)  # Update progress bar
-
-    progress_bar_arc.close()  # Close progress bar for .arc file
-
+            progress_bar_arc.update(1)  
+    progress_bar_arc.close()  
     return g, node_id, node_name
 
 

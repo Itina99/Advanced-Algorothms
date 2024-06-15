@@ -3,6 +3,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import gzip
+import os   
 
 
 
@@ -30,3 +31,11 @@ def load_undirected_graph_with_compression(filename = 'enwiki-2023/enwiki-2023_u
         graph, node_id, node_name = pickle.load(f)
     return graph, node_id, node_name
 
+def open_lcc(filename = "enwiki-2023/largest_cc.pickle"):
+    print("Opening largest connected component...")
+    if os.path.exists(filename):
+        with open(filename, 'rb') as f:
+            largest_cc = pickle.load(f)
+        return largest_cc
+    else:
+        return None

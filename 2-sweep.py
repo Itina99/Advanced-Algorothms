@@ -28,28 +28,13 @@ def bfs_farthest_node(graph, start):
 
 
 def two_sweep_approximation(graph):
-    # Step 1: Convert the graph to an undirected graph if it is directed
-    if graph.is_directed():
-        graph = graph.to_undirected()
     
-    # Step 2: Choose an arbitrary starting vertex v1 in the graph
-
-    # Randomly choose a vertex as v1
     v1 = random.choice(list(graph.nodes()))
-
-    # Step 3: Perform BFS from v1 to find v2
     v2, _ = bfs_farthest_node(graph, v1)
-    
-    # Step 4: Perform BFS from v2 to find the farthest vertex v3
     v3, diameter_approx = bfs_farthest_node(graph, v2)
     
     return diameter_approx
 
-def undirected(G): 
-    U = nx.Graph()
-    for u, v in tqdm(G.edges(), desc="Making Graph Undirected"):
-        U.add_edge(u, v)
-    return U
 
 def largest_connected_component(G):
     largest_cc = max(nx.connected_components(G), key=len)

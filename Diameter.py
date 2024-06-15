@@ -45,7 +45,7 @@ def eccentricity(G, start_node):
     eccentricity = 0
     visited = set()
     queue = deque([(start_node, 0)])
-    total_nodes = len(G)  # Total number of nodes in the graph
+    total_nodes = len(G)  
     progress = tqdm(total=total_nodes, desc="Processing Nodes", unit="node")
     
     while queue:
@@ -53,23 +53,23 @@ def eccentricity(G, start_node):
         if node not in visited:
             visited.add(node)
             eccentricity = max(eccentricity, level)
-            progress.update(1)  # Update progress bar
+            progress.update(1)  
             neighbors = G.neighbors(node)
             for neighbor in neighbors:
                 if neighbor not in visited:
                     queue.append((neighbor, level + 1))
     
-    progress.close()  # Close the progress bar
+    progress.close()  
     return eccentricity
 
-def Bi(G, start_node, i):# da sistemare con la roba della fringe
+def Bi(G, start_node, i):
     max_ecc = -1
     fringe = get_fringe(G, start_node, i)
 
     progress_bar = tqdm(total=len(fringe), desc="Processing nodes")
 
     for node in fringe:
-        e = eccentricity(G, node)  # eccentricity viene calcolata facendo una bfs
+        e = eccentricity(G, node)  
         if e > max_ecc:
             max_ecc = e
 
@@ -79,12 +79,11 @@ def Bi(G, start_node, i):# da sistemare con la roba della fringe
 
     return max_ecc
 
-# calculate the diameter of a graph
 def diameter(G, start_node):
     i = eccentricity(G, start_node)
     lb = i
     ub = 2 * i
-    iterations = i  # Total number of iterations
+    iterations = i  
     progress = tqdm(total=iterations, desc="Computing Diameter", unit="step")
     
     while ub > lb:
@@ -96,7 +95,7 @@ def diameter(G, start_node):
             lb = max(lb, bi)
             ub = 2 * (i - 1)
         i = i - 1
-        progress.update(1)  # Update progress bar
+        progress.update(1)  
     
     progress.close()
     return lb
