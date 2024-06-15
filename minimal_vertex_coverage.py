@@ -1,71 +1,38 @@
 import networkx as nx
-import matplotlib.pyplot as plt
-import openpickle as op
+import itertools
 import random
-import numpy as np
-from tqdm import tqdm
-import pulp
 
-def is_vertex_cover(graph, cover):
-    for u, v in graph.edges():
+def is_vertex_cover(G, cover):
+    for u, v in G.edges():
         if u not in cover and v not in cover:
             return False
     return True
 
+def minimal_vertex_cover(G):
+    nodes = list(G.nodes())
+    for r in range(1, len(nodes) + 1):
+        for subset in itertools.combinations(nodes, r):
+            if is_vertex_cover(G, subset):
+                return set(subset)
+    return set()
 
-def greedy_vertex_cover(graph):
-    cover = set()
-    uncovered_edges = set(graph.edges())
-    
-    with tqdm(total=len(uncovered_edges), desc="Greedy Vertex Cover") as pbar:
-        while uncovered_edges:
-            u, v = uncovered_edges.pop()
-            cover.add(u)
-            cover.add(v)
-            incident_edges = list(graph.edges([u, v]))
-            for e in incident_edges:
-                if e in uncovered_edges:
-                    uncovered_edges.remove(e)
-                    pbar.update(1)
-    return cover
+# Create a smaller graph with 20 nodes and 50 edges
+num_nodes = 20
+num_edges = 50
+G = nx.Graph()
 
+# Add 20 nodes to the graph
+G.add_nodes_from(range(1, num_nodes + 1))
 
+# Add 50 edges randomly
+while len(G.edges) < num_edges:
+    u, v = random.sample(list(G.nodes), 2)  # Convert G.nodes to a list
+    if not G.has_edge(u, v):
+        G.add_edge(u, v)
 
-#################################### SECONDO TEST ####################################
-def minimal_vertex_cover_ilp(graph):
-    print("Formulating ILP...")
-    # Initialize ILP problem
-    prob = pulp.LpProblem("MinimalVertexCover", pulp.LpMinimize)
-
-    # Create a binary variable for each vertex
-    vertex_vars = {v: pulp.LpVariable(f"v_{v}", cat='Binary') for v in graph.nodes()}
-
-    # Objective: Minimize the sum of the vertex variables
-    prob += pulp.lpSum(vertex_vars[v] for v in graph.nodes()), "TotalVertices"
-
-    # Constraint: For each edge, at least one of its endpoints must be in the vertex cover
-    for u, v in graph.edges():
-        prob += vertex_vars[u] + vertex_vars[v] >= 1, f"Edge_{u}_{v}"
-
-    print("Solving ILP...")
-    # Solve the ILP problem
-    prob.solve()
-
-    # Extract the solution
-    vertex_cover = [v for v in graph.nodes() if pulp.value(vertex_vars[v]) == 1]
-
-    return vertex_cover
+# Apply the exact algorithm to find the minimal vertex cover
+vertex_cover = minimal_vertex_cover(G)
+print("Minimal Vertex Cover:", vertex_cover)
+print("Number of vertices in the minimal cover:", len(vertex_cover))
 
 
-
-
-if __name__ == "__main__":
-    G = op.open_pickle()
-    #vertex_cover = minimal_vertex_cover_ilp(G)
-    #print(f"Vertex Cover Size: {len(vertex_cover)}")
-    ##############################################################
-    #TODO: Per lollo, esegui entrambi gli algoritmi separatamente e confronta i risultati
-    ##############################################################
-    
-    greedy_cover = greedy_vertex_cover(G)
-    print("Greedy Vertex Cover:", len(greedy_cover))
