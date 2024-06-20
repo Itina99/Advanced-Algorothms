@@ -5,18 +5,13 @@ from collections import deque
 import pickle
 import openpickle as op
 
-
-
 def bfs_farthest_node(graph, start):
-    """ Perform BFS and return the farthest node and its distance from the start node. """
+    """ Perform BFS using graph-tool and return the farthest node and its distance from the start node. """
     visited = set([start])
     queue = deque([(start, 0)])  # (node, distance)
     farthest_node = start
     max_distance = 0
-
-    total_nodes = G.num_vertices()
-    progress = tqdm(total=total_nodes, desc="Processing Nodes", unit="node")
-
+    
     while queue:
         node, distance = queue.popleft()
         
@@ -24,25 +19,21 @@ def bfs_farthest_node(graph, start):
             max_distance = distance
             farthest_node = node
         
-        for neighbor in node.neighbors(node):
+        for neighbor in node.out_neighbours():
             if neighbor not in visited:
                 visited.add(neighbor)
-                progress.update(1)
                 queue.append((neighbor, distance + 1))
-    progress.close()
+    
     return farthest_node, max_distance
 
-
 def two_sweep_approximation(graph):
-    
-
     # Randomly choose a vertex as v1
     v1 = random.choice(list(graph.vertices()))
 
-    # Step 3: Perform BFS from v1 to find v2
+    # Perform BFS from v1 to find v2
     v2, _ = bfs_farthest_node(graph, v1)
     
-    # Step 4: Perform BFS from v2 to find the farthest vertex v3
+    # Perform BFS from v2 to find the farthest vertex v3
     v3, diameter_approx = bfs_farthest_node(graph, v2)
     
     return diameter_approx
@@ -88,11 +79,9 @@ def largest_connected_component(G):
     with open('enwiki-2023/largest_cc.pickle', 'wb') as f:
         pickle.dump(largest_cc, f)
     
-    return gt.GraphView(G, vfilt=vfilt)
-
+    return largest_cc
 
 if __name__ == '__main__':
-    
     # Check if the largest connected component is already saved
     largest_cc = op.open_lcc()
     if largest_cc is None:
